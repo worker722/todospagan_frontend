@@ -72,9 +72,17 @@ function Login(props) {
       enableLoading();
       setTimeout(() => {
         login(values.email, values.password)
-          .then(({ data: { accessToken } }) => {
+          .then(({ data }) => {
+            if(data.success == false) {
+              setStatus(
+                intl.formatMessage({
+                  id: "AUTH.VALIDATION.INVALID_LOGIN",
+                })
+              );
+            }else {
+              props.login(data.data.token);
+            }
             disableLoading();
-            props.login(accessToken);
           })
           .catch(() => {
             disableLoading();

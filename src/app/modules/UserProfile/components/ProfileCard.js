@@ -49,7 +49,7 @@ export function ProfileCard() {
                 <div className="symbol symbol-60 symbol-xxl-100 mr-5 align-self-start align-self-xxl-center">
                   <div
                     className="symbol-label"
-                    style={{ backgroundImage: `url(${user.pic})` }}
+                    style={{ backgroundImage: `url("")` }}
                   ></div>
                   {/* style="background-i
                   mage:url('/metronic/theme/html/demo1/dist/assets/media/users/300_21.jpg')" */}
@@ -62,7 +62,7 @@ export function ProfileCard() {
                   >
                     {user.firstname} {user.lastname}
                   </a>
-                  <div className="text-muted">{user.occupation}</div>
+                  <div className="text-muted">user.occupation</div>
                   <div className="mt-2">
                     <a
                       href="#"
@@ -90,11 +90,11 @@ export function ProfileCard() {
                 </div>
                 <div className="d-flex align-items-center justify-content-between mb-2">
                   <span className="font-weight-bold mr-2">Phone:</span>
-                  <span className="text-muted">{user.phone}</span>
+                  <span className="text-muted">user.phone</span>
                 </div>
                 <div className="d-flex align-items-center justify-content-between">
                   <span className="font-weight-bold mr-2">Location:</span>
-                  <span className="text-muted">{user.address.city}</span>
+                  <span className="text-muted">user.address.city</span>
                 </div>
               </div>
               {/* end::Contact */}

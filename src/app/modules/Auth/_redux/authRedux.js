@@ -29,8 +29,9 @@ export const reducer = persistReducer(
 
       case actionTypes.Register: {
         const { authToken } = action.payload;
-
-        return { authToken, user: undefined };
+        const { user } = action.user;
+        console.log(user);
+        return { authToken, user };
       }
 
       case actionTypes.Logout: {
@@ -56,26 +57,28 @@ export const reducer = persistReducer(
 
 export const actions = {
   login: (authToken) => ({ type: actionTypes.Login, payload: { authToken } }),
-  register: (authToken) => ({
+  register: (authToken, user) => ({
     type: actionTypes.Register,
     payload: { authToken },
+    user: { user },
   }),
   logout: () => ({ type: actionTypes.Logout }),
-  requestUser: (user) => ({
-    type: actionTypes.UserRequested,
-    payload: { user },
-  }),
+  // requestUser: (user) => ({
+  //   type: actionTypes.UserRequested,
+  //   payload: { user },
+  // }),
   fulfillUser: (user) => ({ type: actionTypes.UserLoaded, payload: { user } }),
   setUser: (user) => ({ type: actionTypes.SetUser, payload: { user } }),
 };
 
 export function* saga() {
   yield takeLatest(actionTypes.Login, function* loginSaga() {
-    yield put(actions.requestUser());
+    // yield put(actions.requestUser());
   });
 
   yield takeLatest(actionTypes.Register, function* registerSaga() {
-    yield put(actions.requestUser());
+    console.log('register');
+    // yield put(actions.requestUser());
   });
 
   yield takeLatest(actionTypes.UserRequested, function* userRequested() {

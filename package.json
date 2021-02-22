@@ -44,7 +44,7 @@
         "@tanem/svg-injector": "8.0.50",
         "apexcharts": "3.19.2",
         "axios": "0.19.2",
-        "axios-mock-adapter": "1.18.1",
+        "axios-mock-adapter": "^1.19.0",
         "bootstrap": "4.6.0",
         "clipboard-copy": "3.1.0",
         "clsx": "1.1.0",

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { da } from "date-fns/locale";
 
-export const LOGIN_URL = "api/auth/login";
+export const LOGIN_URL = "http://192.168.109.67/api/login";
 // export const REGISTER_URL = "api/auth/register";
 export const REGISTER_URL = "http://192.168.109.67/api/register";
 export const REQUEST_PASSWORD_URL = "api/auth/forgot-password";

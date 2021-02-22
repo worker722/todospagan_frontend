@@ -108,13 +108,12 @@ function Registration(props) {
               })
             );
           }else {
-            props.register(data.data.token);
+            props.register(data.data.token, data.data.user);
           }
           disableLoading();
           setSubmitting(false);
         })
         .catch((error) => {
-          console.log(error);
           setSubmitting(false);
           setStatus(
             intl.formatMessage({

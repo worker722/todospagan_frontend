@@ -11,7 +11,6 @@ import { shallowEqual, useSelector } from "react-redux";
 import { Layout } from "../_metronic/layout";
 import BasePage from "./BasePage";
 import { Logout, AuthPage } from "./modules/Auth";
-import ErrorsPage from "./modules/ErrorsExamples/ErrorsPage";
 
 export function Routes() {
   const { isAuthorized } = useSelector(
@@ -33,7 +32,6 @@ export function Routes() {
         <Redirect from="/auth" to="/" />
       )}
 
-      <Route path="/error" component={ErrorsPage} />
       <Route path="/logout" component={Logout} />
 
       {!isAuthorized ? (
