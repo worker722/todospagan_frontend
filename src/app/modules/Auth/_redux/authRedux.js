@@ -79,6 +79,7 @@ export function* saga() {
   });
 
   yield takeLatest(actionTypes.UserRequested, function* userRequested() {
+    console.log('getUserByToken')
     const { data: user } = yield getUserByToken();
 
     yield put(actions.fulfillUser(user));

@@ -11,7 +11,7 @@ import { useHistory } from "react-router-dom";
 const initialValues = {
   fullname: "",
   email: "",
-  username: "",
+  phone_number: "",
   password: "",
   changepassword: "",
   acceptTerms: false,
@@ -21,6 +21,7 @@ function Registration(props) {
   const history = useHistory();
   const { intl } = props;
   const [loading, setLoading] = useState(false);
+  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
   const RegistrationSchema = Yup.object().shape({
     fullname: Yup.string()
       .min(3, "Minimum 3 symbols")
@@ -32,16 +33,15 @@ function Registration(props) {
       ),
     email: Yup.string()
       .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD",
         })
       ),
-    username: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+    phone_number: Yup.string()
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .min(8, "Minimum 3 symbols")
+      .max(15, "Maximum 50 symbols")
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD",
@@ -99,13 +99,22 @@ function Registration(props) {
     onSubmit: (values, { setStatus, setSubmitting }) => {
       setSubmitting(true);
       enableLoading();
-      register(values.email, values.fullname, values.username, values.password)
-        .then(({ data: { accessToken } }) => {
-          props.register(accessToken);
+      register(values.email, values.fullname, values.phone_number, values.password)
+        .then(({data}) => {
+          if(data.success == false) {
+            setStatus(
+              intl.formatMessage({
+                id: "AUTH.VALIDATION.INVALID_LOGIN",
+              })
+            );
+          }else {
+            props.register(data.data.token);
+          }
           disableLoading();
           setSubmitting(false);
         })
-        .catch(() => {
+        .catch((error) => {
+          console.log(error);
           setSubmitting(false);
           setStatus(
             intl.formatMessage({
@@ -179,24 +188,24 @@ function Registration(props) {
         </div>
         {/* end: Email */}
 
-        {/* begin: Username */}
+        {/* begin: phone_number */}
         <div className="form-group fv-plugins-icon-container">
           <input
-            placeholder="User name"
+            placeholder="Phone number"
             type="text"
             className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-              "username"
+              "phone_number"
             )}`}
-            name="username"
-            {...formik.getFieldProps("username")}
+            name="phone_number"
+            {...formik.getFieldProps("phone_number")}
           />
-          {formik.touched.username && formik.errors.username ? (
+          {formik.touched.phone_number && formik.errors.phone_number ? (
             <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.username}</div>
+              <div className="fv-help-block">{formik.errors.phone_number}</div>
             </div>
           ) : null}
         </div>
-        {/* end: Username */}
+        {/* end: phone_number */}
 
         {/* begin: Password */}
         <div className="form-group fv-plugins-icon-container">

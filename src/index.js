@@ -39,7 +39,6 @@ const { PUBLIC_URL } = process.env;
  *
  * @see https://github.com/ctimmerm/axios-mock-adapter
  */
-/* const mock = */ _redux.mockAxios(axios);
 
 /**
  * Inject metronic interceptors for axios.
