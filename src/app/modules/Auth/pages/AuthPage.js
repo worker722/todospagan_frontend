@@ -6,9 +6,13 @@ import { ContentRoute } from "../../../../_metronic/layout";
 import Login from "./Login";
 import Registration from "./Registration";
 import ForgotPassword from "./ForgotPassword";
+import { UserRegister } from "./UserRegister";
 import "../../../../_metronic/_assets/sass/pages/login/classic/login-1.scss";
+import { Route } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 export function AuthPage() {
+  const history = useHistory();
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -100,6 +104,9 @@ export function AuthPage() {
                   path="/auth/forgot-password"
                   component={ForgotPassword}
                 />
+                <Route path="/auth/user-register">
+                  <UserRegister show={true} onHide={() => { history.push("/auth/registration"); }}></UserRegister>
+                </Route>
                 <Redirect from="/auth" exact={true} to="/auth/login" />
                 <Redirect to="/auth/login" />
               </Switch>

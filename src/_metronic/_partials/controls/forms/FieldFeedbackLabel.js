@@ -6,7 +6,8 @@ const inputLabel = ({ label, touched, error, customFeedbackLabel }) => {
   }
 
   if (touched && !error && label) {
-    return <div className="valid-feedback">{label} was entered correct</div>;
+    // return <div className="valid-feedback">{label} was entered correct</div>;
+    return <div className="valid-feedback">Field was entered correct</div>;
   }
 
   return (
@@ -14,7 +15,7 @@ const inputLabel = ({ label, touched, error, customFeedbackLabel }) => {
       {customFeedbackLabel && <>{customFeedbackLabel}</>}
       {!customFeedbackLabel && (
         <>
-          Please enter <b>{label}</b>
+          {/* Please enter <b>{label}</b> */}
         </>
       )}
     </div>
@@ -31,7 +32,7 @@ const selectLabel = ({ label, touched, error, customFeedbackLabel }) => {
       {customFeedbackLabel && <>{customFeedbackLabel}</>}
       {!customFeedbackLabel && label && (
         <>
-          Please select <b>{label}</b>
+          {/* Please select <b>{label}</b> */}
         </>
       )}
     </div>

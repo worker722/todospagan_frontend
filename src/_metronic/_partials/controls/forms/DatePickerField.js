@@ -37,7 +37,7 @@ export function DatePickerField({ ...props }) {
         </div>
       ) : (
         <div className="feedback">
-          Please enter <b>{props.label}</b> in 'mm/dd/yyyy' format
+          {/* Please enter <b>{props.label}</b> in 'mm/dd/yyyy' format */}
         </div>
       )}
     </>

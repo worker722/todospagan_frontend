@@ -100,14 +100,14 @@ function Registration(props) {
       setSubmitting(true);
       enableLoading();
       register(values.email, values.fullname, values.phone_number, values.password)
-        .then(({data}) => {
-          if(data.success == false) {
+        .then(({ data }) => {
+          if (data.success == false) {
             setStatus(
               intl.formatMessage({
                 id: "AUTH.VALIDATION.INVALID_LOGIN",
               })
             );
-          }else {
+          } else {
             props.register(data.data.token, data.data.user);
           }
           disableLoading();
@@ -186,23 +186,30 @@ function Registration(props) {
           ) : null}
         </div>
         {/* end: Email */}
-
+        
         {/* begin: phone_number */}
         <div className="form-group fv-plugins-icon-container">
-          <input
-            placeholder="Phone number"
-            type="text"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-              "phone_number"
-            )}`}
-            name="phone_number"
-            {...formik.getFieldProps("phone_number")}
-          />
-          {formik.touched.phone_number && formik.errors.phone_number ? (
-            <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.phone_number}</div>
+          <div className="input-group input-group-lg input-group-solid">
+            <div className="input-group-prepend">
+              <span className="input-group-text">
+                <i className="fa fa-phone"></i>
+              </span>
             </div>
-          ) : null}
+            <input
+              type="text"
+              placeholder="+1(123)112-11-11"
+              className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
+                "phone_number"
+              )}`}
+              name="phone_number"
+              {...formik.getFieldProps("phone_number")}
+            />
+          </div>
+          {formik.touched.phone_number && formik.errors.phone_number ? (
+              <div className="fv-plugins-message-container">
+                <div className="fv-help-block">{formik.errors.phone_number}</div>
+              </div>
+            ) : null}
         </div>
         {/* end: phone_number */}
 
@@ -273,6 +280,14 @@ function Registration(props) {
         </div>
         {/* end: Terms and Conditions */}
         <div className="form-group d-flex flex-wrap flex-center">
+          <Link to="/auth/user-register">
+            <button
+              type="button"
+              className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
+            >
+              Create Account
+            </button>
+          </Link>
           <button
             type="submit"
             disabled={
@@ -286,14 +301,6 @@ function Registration(props) {
             {loading && <span className="ml-3 spinner spinner-white"></span>}
           </button>
 
-          <Link to="/auth/login">
-            <button
-              type="button"
-              className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
-            >
-              Cancel
-            </button>
-          </Link>
         </div>
       </form>
     </div>
