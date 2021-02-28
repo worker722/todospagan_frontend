@@ -11,71 +11,76 @@ import {
     DatePickerField,
 } from "../../../../../_metronic/_partials/controls";
 import countryList from 'react-select-country-list'
+import { shallowEqual, useSelector } from "react-redux";
+import * as auth from "../../_redux/authRedux";
+import Moment from 'moment';
 
 const CustomerEditSchema = Yup.object().shape({
-    firstName: Yup.string()
+    first_name: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Firstname is required"),
-    secondName: Yup.string()
+        .required("This field is required"),
+    second_name: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Secondname is required"),
-    surname: Yup.string()
+        .required("This field is required"),
+    first_surname: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Surname is required"),
-    secondSurname: Yup.string()
+        .required("This field is required"),
+    second_surname: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Second Surname is required"),
-    marriedSurname: Yup.string()
+        .required("This field is required"),
+    married_surname: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Married Surname is required"),
-    personal_phone_1: Yup.string()
+        .required("This field is required"),
+    birth_date: Yup.mixed()
+        .nullable(false)
+        .required("This field is required"),
+    birth_country: Yup.mixed()
+        .nullable(false)
+        .required("This field is required"),
+    passport: Yup.string().required("This field is required"),
+    marital_status: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Phone Number is required"),
-    personal_phone_2: Yup.string()
+        .required("This field is required"),
+    main_phone: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Phone Number is required"),
-    email: Yup.string()
+        .required("This field is required"),
+    secondary_phone: Yup.string()
+        .min(3, "Minimum 3 symbols")
+        .max(50, "Maximum 50 symbols")
+        .required("This field is required"),
+    primary_cell: Yup.string()
+        .min(3, "Minimum 3 symbols")
+        .max(50, "Maximum 50 symbols")
+        .required("This field is required"),
+    secondary_cell: Yup.string()
+        .min(3, "Minimum 3 symbols")
+        .max(50, "Maximum 50 symbols")
+        .required("This field is required"),
+    primary_email: Yup.string()
         .email("Invalid email")
-        .required("Email is required"),
-    userName: Yup.string().required("Username is required"),
-    dateOfBbirth: Yup.mixed()
-        .nullable(false)
-        .required("Date of Birth is required"),
-    countryOfBbirth: Yup.mixed()
-        .nullable(false)
-        .required("Date of Birth is required"),
-    ipAddress: Yup.string().required("ID or Passport is required"),
-    residentialTel: Yup.string()
+        .required("This field is required"),
+    secondary_email: Yup.string()
+        .email("Invalid email")
+        .required("This field is required"),
+    post: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Residential telephone is required"),
-    cell: Yup.string()
-        .min(3, "Minimum 3 symbols")
-        .max(50, "Maximum 50 symbols")
-        .required("Cell telephone is required"),
-    profession: Yup.string()
-        .min(3, "Minimum 3 symbols")
-        .max(50, "Maximum 50 symbols")
-        .required("Profession or occupation is required"),
-    economicActivity: Yup.string()
-        .min(3, "Minimum 3 symbols")
-        .max(50, "Maximum 50 symbols")
-        .required("Economic activity is required"),
+        .required("This field is required"),
     province: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Province is required"),
+        .required("This field is required"),
     district: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("District is required"),
+        .required("This field is required"),
     township: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
@@ -83,43 +88,43 @@ const CustomerEditSchema = Yup.object().shape({
     neighborhood: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     avenue: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     edifice: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     house: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     reference: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
 });
 const initCustomer = {
     id: undefined,
-    firstName: "",
-    secondName: "",
-    surname: "",
-    secondSurname: "",
-    marriedSurname: "",
-    personal_phone_1: "",
-    personal_phone_2: "",
-    email: "",
-    userName: "",
-    gender: "Female",
+    first_name: "",
+    second_name: "",
+    first_surname: "",
+    second_surname: "",
+    married_surname: "",
     status: 0,
-    dateOfBbirth: "",
-    ipAddress: "",
-    residentialTel: "",
-    cell: "",
-    profession: "",
-    economicActivity: "",
+    birth_country: "",
+    birth_date: "",
+    passport: "",
+    marital_status: "",
+    main_phone: "",
+    secondary_phone: "",
+    primary_cell: "",
+    secondary_cell: "",
+    primary_email: "",
+    secondary_email: "",
+    post: "",
     province: "",
     district: "",
     township: "",
@@ -128,60 +133,67 @@ const initCustomer = {
     edifice: "",
     house: "",
     reference: "",
+    gender: "Female",
+    residence_country: "PA",
+    nationality: "PA",
+    passport_country: "PA",
     type: 1
 };
 const AgentResidentDetails = (props) => {
-    const { onHide } = props;
+    const { onHide, setProgress, setContentName } = props;
+    setProgress(60);
     const countryLists = useMemo(() => countryList().getData(), []);
+    const { agent_resident_details } = useSelector((state) => state.auth);
     return (
         <>
             <Formik
                 enableReinitialize={true}
-                initialValues={initCustomer}
+                initialValues={agent_resident_details ? agent_resident_details : initCustomer}
                 validationSchema={CustomerEditSchema}
                 onSubmit={(values) => {
-                    console.log(values);
+                    var birth_country = values['birth_country'];
+                    values['birth_country'] = Moment(birth_country).format('YYYY-MM-DD');
+                    var birth_date = values['birth_date'];
+                    values['birth_date'] = Moment(birth_date).format('YYYY-MM-DD');
+                    props.setAgentResidentDetails(values);
+                    setContentName("ShareholderData");
                 }}
             >
                 {({ handleSubmit }) => (
                     <>
                         <Modal.Body className="overlay overlay-block cursor-default">
                             <Form className="form form-label-right">
-                                <h3>Personal information</h3>
+                                <h3>Resident agent details</h3>
                                 <hr></hr>
                                 <div className="form-group row">
                                     {/* First Name */}
                                     <div className="col-lg-3">
                                         <Field
-                                            name="firstName"
+                                            name="first_name"
                                             component={Input}
-                                            placeholder="First Name"
                                             label="First Name"
                                         />
                                     </div>
                                     {/* Last Name */}
                                     <div className="col-lg-3">
                                         <Field
-                                            name="secondName"
+                                            name="second_name"
                                             component={Input}
-                                            placeholder="Second Name"
                                             label="Second Name"
                                         />
                                     </div>
                                     {/* Login */}
                                     <div className="col-lg-3">
                                         <Field
-                                            name="surname"
+                                            name="first_surname"
                                             component={Input}
-                                            placeholder="Surname"
                                             label="Surname"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            name="secondSurname"
+                                            name="second_surname"
                                             component={Input}
-                                            placeholder="Second Surname"
                                             label="Second Surname"
                                         />
                                     </div>
@@ -189,26 +201,135 @@ const AgentResidentDetails = (props) => {
                                 <div className="form-group row">
                                     <div className="col-lg-3">
                                         <Field
-                                            name="marriedSurname"
+                                            name="married_surname"
                                             component={Input}
-                                            placeholder="Married Surname"
                                             label="Married Surname"
                                         />
                                     </div>
+                                    {/* Gender */}
+                                    <div className="col-lg-3">
+                                        <Select name="gender" label="Gender">
+                                            <option value="Female">Female</option>
+                                            <option value="Male">Male</option>
+                                        </Select>
+                                    </div>
+                                    {/* IP Address */}
                                     <div className="col-lg-3">
                                         <Field
-                                            name="personal_phone_1"
+                                            name="passport"
                                             component={Input}
-                                            placeholder="Personal phone 1"
-                                            label="Personal phone 1"
+                                            label="ID or Passport"
+                                        // customFeedbackLabel="We'll never share customer IP Address with anyone else"
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <Select name="passport_country" label="Passport issuing country">
+                                            {countryLists?.map((country, index) => {
+                                                return (
+                                                    <option key={index} value={country.value}>{country.label}</option>
+                                                )
+                                            })}
+                                            {/*  */}
+                                            {/* <option value="Male">Male</option> */}
+                                        </Select>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+
+                                    <div className="col-lg-3">
+                                        <DatePickerField
+                                            name="birth_date"
+                                            label="Date of Birth"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            name="personal_phone_2"
+                                            name="marital_status"
                                             component={Input}
-                                            placeholder="Personal phone 2"
-                                            label="Personal phone 2"
+                                            label="Marital status"
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <DatePickerField
+                                            name="birth_country"
+                                            label="Country of Birth"
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <Select name="nationality" label="Nationality">
+                                            {countryLists?.map((country, index) => {
+                                                return (
+                                                    <option key={index} value={country.value}>{country.label}</option>
+                                                )
+                                            })}
+                                            {/*  */}
+                                            {/* <option value="Male">Male</option> */}
+                                        </Select>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <div className="col-lg-3">
+                                        <Select name="residence_country" label="Country of Residence">
+                                            {countryLists?.map((country, index) => {
+                                                return (
+                                                    <option key={index} value={country.value}>{country.label}</option>
+                                                )
+                                            })}
+                                            {/*  */}
+                                            {/* <option value="Male">Male</option> */}
+                                        </Select>
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <Field
+                                            name="main_phone"
+                                            component={Input}
+                                            label="Main phone"
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <Field
+                                            name="secondary_phone"
+                                            component={Input}
+                                            label="Secondary Phone"
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <Field
+                                            name="primary_cell"
+                                            component={Input}
+                                            label="Primary cell"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <div className="col-lg-3">
+                                        <Field
+                                            name="secondary_cell"
+                                            component={Input}
+                                            label="Secondary cell"
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <Field
+                                            type="email"
+                                            name="primary_email"
+                                            component={Input}
+                                            label="Primary email"
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <Field
+                                            type="email"
+                                            name="secondary_email"
+                                            component={Input}
+                                            label="Secondary email"
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <Field
+                                            name="post"
+                                            component={Input}
+                                            label="Post"
                                         />
                                     </div>
                                 </div>
@@ -228,7 +349,6 @@ const AgentResidentDetails = (props) => {
                                         <Field
                                             name="province"
                                             component={Input}
-                                            placeholder="Province"
                                             label="Province"
                                         />
                                     </div>
@@ -236,7 +356,6 @@ const AgentResidentDetails = (props) => {
                                         <Field
                                             name="district"
                                             component={Input}
-                                            placeholder="District"
                                             label="District"
                                         />
                                     </div>
@@ -244,7 +363,6 @@ const AgentResidentDetails = (props) => {
                                         <Field
                                             name="township"
                                             component={Input}
-                                            placeholder="Township"
                                             label="Township"
                                         />
                                     </div>
@@ -254,7 +372,6 @@ const AgentResidentDetails = (props) => {
                                         <Field
                                             name="neighborhood"
                                             component={Input}
-                                            placeholder="Neighborhood"
                                             label="Neighborhood"
                                         />
                                     </div>
@@ -262,7 +379,6 @@ const AgentResidentDetails = (props) => {
                                         <Field
                                             name="avenue"
                                             component={Input}
-                                            placeholder="Avenue"
                                             label="Avenue"
                                         />
                                     </div>
@@ -270,7 +386,6 @@ const AgentResidentDetails = (props) => {
                                         <Field
                                             name="edifice"
                                             component={Input}
-                                            placeholder="Edifice"
                                             label="Edifice"
                                         />
                                     </div>
@@ -278,7 +393,6 @@ const AgentResidentDetails = (props) => {
                                         <Field
                                             name="house"
                                             component={Input}
-                                            placeholder="House or Apt"
                                             label="House or Apt"
                                         />
                                     </div>
@@ -288,7 +402,6 @@ const AgentResidentDetails = (props) => {
                                         <Field
                                             name="reference"
                                             component={Input}
-                                            placeholder="Reference point"
                                             label="Reference point"
                                         />
                                     </div>
@@ -298,10 +411,10 @@ const AgentResidentDetails = (props) => {
                         <Modal.Footer>
                             <button
                                 type="button"
-                                onClick={onHide}
+                                onClick={() => setContentName("CommercialReferences")}
                                 className="btn btn-light btn-elevate"
                             >
-                                Cancel
+                                Previous
                             </button>
                             <> </>
                             <button
@@ -319,4 +432,4 @@ const AgentResidentDetails = (props) => {
     )
 }
 
-export default injectIntl(connect(null, null)(AgentResidentDetails));
+export default injectIntl(connect(null, auth.actions)(AgentResidentDetails));

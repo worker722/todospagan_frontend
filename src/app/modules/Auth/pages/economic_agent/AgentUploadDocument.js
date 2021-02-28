@@ -5,13 +5,25 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import pdf_icon from "../../../../../assets/images/svg/PDF_file_icon.svg";
 import add_file_icon from "../../../../../assets/images/svg/add_file_icon.svg";
 import cancel_icon from "../../../../../assets/images/icons/cancel.png";
+import { shallowEqual, useSelector } from "react-redux";
+import * as auth from "../../_redux/authRedux";
+
 const UploadDocument = (props) => {
-    const { onHide } = props;
+    const { onHide, setContentName, setProgress } = props;
     const [first_document, setFirst] = useState([]);
     const [second_document, setSecond] = useState([]);
     const [third_document, setThird] = useState([]);
     const [input_name, setInputTypeName] = useState(1);
     const [update_index, setUpdateIndex] = useState(0);
+    const { agent_document } = useSelector((state) => state.auth);
+    useEffect(() => {
+        if (agent_document) {
+            setFirst(agent_document.first_document);
+            setSecond(agent_document.second_document);
+            setThird(agent_document.third_document);
+        }
+    }, [agent_document])
+
     const onFileUpload = (e) => {
         const files = e.target.files;
         if (files.length > 0) {
@@ -154,6 +166,16 @@ const UploadDocument = (props) => {
         )
     }
 
+    const nextPage = () => {
+        const data = {
+            'first_document': first_document,
+            'second_document': second_document,
+            'third_document': third_document
+        }
+        props.setAgentDocument(data);
+        setContentName("AgentRegulatoryData");
+    }
+
     return (
         <>
             <Modal.Body className="overlay overlay-block cursor-default">
@@ -187,12 +209,24 @@ const UploadDocument = (props) => {
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <span className="pr-4">
-                    <Button variant="secondary" onClick={onHide}>Cancel</Button>
-                </span>
+                <button
+                    type="button"
+                    onClick={() => setContentName("ShareholderData")}
+                    className="btn btn-light btn-elevate"
+                >
+                    Previous
+                </button>
+                <> </>
+                <button
+                    type="submit"
+                    onClick={() => nextPage()}
+                    className="btn btn-primary btn-elevate"
+                >
+                    Next
+                </button>
             </Modal.Footer>
         </>
     )
 }
 
-export default injectIntl(connect(null, null)(UploadDocument));
+export default injectIntl(connect(null, auth.actions)(UploadDocument));

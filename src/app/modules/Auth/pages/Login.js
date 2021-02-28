@@ -80,7 +80,7 @@ function Login(props) {
                 })
               );
             }else {
-              props.login(data.data.token);
+              props.login(data.data.token, data.data.user);
             }
             disableLoading();
           })

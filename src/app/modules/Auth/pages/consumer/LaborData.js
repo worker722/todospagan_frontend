@@ -11,39 +11,42 @@ import {
     DatePickerField,
 } from "../../../../../_metronic/_partials/controls";
 import countryList from 'react-select-country-list'
+import { shallowEqual, useSelector } from "react-redux";
+import * as auth from "../../_redux/authRedux";
+import Moment from 'moment';
 
 const CustomerEditSchema = Yup.object().shape({
     employment_situation: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Employment situation is required"),
+        .required("This field is required"),
     work_place: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Workplace is required"),
+        .required("This field is required"),
     work_phone: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Work Phone is required"),
+        .required("This field is required"),
     work_email: Yup.string()
         .email("Invalid email")
-        .required("Work Email is required"),
+        .required("This field is required"),
     monthly_income: Yup.number()
         .min(1, "$1 is minimum")
         .max(1000000, "$1000000 is maximum")
-        .required("Monthly income is required"),
-    other_income: Yup.number()
+        .required("This field is required"),
+    other_recurring_income: Yup.number()
         .min(1, "$1 is minimum")
         .max(1000000, "$1000000 is maximum")
-        .required("Other recurring income is required"),
-    source_income: Yup.number()
+        .required("This field income is required"),
+    source_recurring_income: Yup.number()
         .min(1, "$1 is minimum")
         .max(1000000, "$1000000 is maximum")
-        .required("Source of recurring income is required"),
+        .required("This field is required"),
     province: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Province is required"),
+        .required("This field is required"),
     district: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
@@ -51,30 +54,30 @@ const CustomerEditSchema = Yup.object().shape({
     township: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     neighborhood: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Neighborhood is required"),
+        .required("This field is required"),
     avenue: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Avenue is required"),
+        .required("This field is required"),
     edifice: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Edifice is required"),
+        .required("This field is required"),
     house: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("House or Apt is required"),
+        .required("This field is required"),
     reference: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
-    start_date: Yup.mixed()
+        .required("This field is required"),
+    current_work_start_date: Yup.mixed()
         .nullable(false)
-        .required("Start Date is required"),
+        .required("This field is required"),
 });
 const initCustomer = {
     id: undefined,
@@ -83,10 +86,8 @@ const initCustomer = {
     work_phone: "",
     work_email: "",
     monthly_income: "",
-    other_income: "",
-    source_income: "",
-    gender: "Female",
-    status: 0,
+    other_recurring_income: "",
+    source_recurring_income: "",
     province: "",
     district: "",
     township: "",
@@ -95,19 +96,24 @@ const initCustomer = {
     edifice: "",
     house: "",
     reference: "",
-    start_date: "",
-    type: 1
+    current_work_start_date: "",
 };
 const LaborData = (props) => {
-    const { onHide } = props;
+    const { onHide, setProgress, setContentName } = props;
+    setProgress(40);
     const countryLists = useMemo(() => countryList().getData(), []);
+    const { labor_data } = useSelector((state) => state.auth);
     return (
         <>
             <Formik
                 enableReinitialize={true}
-                initialValues={initCustomer}
+                initialValues={labor_data ? labor_data : initCustomer}
                 validationSchema={CustomerEditSchema}
                 onSubmit={(values) => {
+                    var current_work_start_date = values['current_work_start_date'];
+                    values['current_work_start_date'] = Moment(current_work_start_date).format('YYYY-MM-DD');
+                    props.setLaborData(values);
+                    setContentName("PersonalReference");
                     console.log(values);
                 }}
             >
@@ -115,14 +121,13 @@ const LaborData = (props) => {
                     <>
                         <Modal.Body className="overlay overlay-block cursor-default">
                             <Form className="form form-label-right">
-                                <h3>Personal information</h3>
+                                <h3>Labor data</h3>
                                 <hr></hr>
                                 <div className="form-group row">
                                     <div className="col-lg-3">
                                         <Field
                                             name="employment_situation"
                                             component={Input}
-                                            placeholder="Employment situation"
                                             label="Employment situation"
                                         />
                                     </div>
@@ -130,7 +135,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="work_place"
                                             component={Input}
-                                            placeholder="Workplace"
                                             label="Workplace"
                                         />
                                     </div>
@@ -138,7 +142,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="work_phone"
                                             component={Input}
-                                            placeholder="Work phone"
                                             label="Work phone"
                                         />
                                     </div>
@@ -146,7 +149,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="work_email"
                                             component={Input}
-                                            placeholder="Work email"
                                             label="Work email"
                                         />
                                     </div>
@@ -154,7 +156,7 @@ const LaborData = (props) => {
                                 <div className="form-group row">
                                     <div className="col-lg-3">
                                         <DatePickerField
-                                            name="start_date"
+                                            name="current_work_start_date"
                                             label="Current Work Start Date"
                                         />
                                     </div>
@@ -163,25 +165,22 @@ const LaborData = (props) => {
                                             type="number"
                                             name="monthly_income"
                                             component={Input}
-                                            placeholder="Price"
                                             label="Monthly income"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
                                             type="number"
-                                            name="other_income"
+                                            name="other_recurring_income"
                                             component={Input}
-                                            placeholder="Price"
                                             label="Other recurring income"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
                                             type="number"
-                                            name="source_income"
+                                            name="source_recurring_income"
                                             component={Input}
-                                            placeholder="Price"
                                             label="Source of recurring income"
                                         />
                                     </div>
@@ -202,7 +201,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="province"
                                             component={Input}
-                                            placeholder="Province"
                                             label="Province"
                                         />
                                     </div>
@@ -210,7 +208,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="district"
                                             component={Input}
-                                            placeholder="District"
                                             label="District"
                                         />
                                     </div>
@@ -218,7 +215,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="township"
                                             component={Input}
-                                            placeholder="Township"
                                             label="Township"
                                         />
                                     </div>
@@ -228,7 +224,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="neighborhood"
                                             component={Input}
-                                            placeholder="Neighborhood"
                                             label="Neighborhood"
                                         />
                                     </div>
@@ -236,7 +231,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="avenue"
                                             component={Input}
-                                            placeholder="Avenue"
                                             label="Avenue"
                                         />
                                     </div>
@@ -244,7 +238,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="edifice"
                                             component={Input}
-                                            placeholder="Edifice"
                                             label="Edifice"
                                         />
                                     </div>
@@ -252,7 +245,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="house"
                                             component={Input}
-                                            placeholder="House or Apt"
                                             label="House or Apt"
                                         />
                                     </div>
@@ -262,7 +254,6 @@ const LaborData = (props) => {
                                         <Field
                                             name="reference"
                                             component={Input}
-                                            placeholder="Reference point"
                                             label="Reference point"
                                         />
                                     </div>
@@ -272,10 +263,10 @@ const LaborData = (props) => {
                         <Modal.Footer>
                             <button
                                 type="button"
-                                onClick={onHide}
+                                onClick={() => { setContentName("UserInfo") }}
                                 className="btn btn-light btn-elevate"
                             >
-                                Cancel
+                                Previous
                             </button>
                             <> </>
                             <button
@@ -293,4 +284,4 @@ const LaborData = (props) => {
     )
 }
 
-export default injectIntl(connect(null, null)(LaborData));
+export default injectIntl(connect(null, auth.actions)(LaborData));

@@ -22,6 +22,8 @@ export function DatePickerField({ ...props }) {
     <>
       {props.label && <label>{props.label}</label>}
       <DatePicker
+        disabled={false}
+        dateFormat="yyyy-MM-dd"
         className={getFieldCSSClasses(touched[field.name], errors[field.name])}
         style={{ width: "100%" }}
         {...field}

@@ -11,105 +11,141 @@ import {
     DatePickerField,
 } from "../../../../../_metronic/_partials/controls";
 import countryList from 'react-select-country-list'
+import {
+    Switch,
+    Grid,
+    Typography
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import * as auth from "../../_redux/authRedux";
+import { shallowEqual, useSelector } from "react-redux";
+import { economic_agent_insert } from "../../_redux/authCrud";
+
+const AntSwitch = withStyles(theme => ({
+    root: {
+        width: 28,
+        height: 16,
+        padding: 0,
+        display: "flex"
+    },
+    switchBase: {
+        padding: 2,
+        color: theme.palette.grey[500],
+        "&$checked": {
+            transform: "translateX(12px)",
+            color: theme.palette.common.white,
+            "& + $track": {
+                opacity: 1,
+                backgroundColor: theme.palette.primary.main,
+                borderColor: theme.palette.primary.main
+            }
+        }
+    },
+    thumb: {
+        width: 12,
+        height: 12,
+        boxShadow: "none"
+    },
+    track: {
+        border: `1px solid ${theme.palette.grey[500]}`,
+        borderRadius: 16 / 2,
+        opacity: 1,
+        backgroundColor: theme.palette.common.white
+    },
+    checked: {}
+}))(Switch);
 
 const CustomerEditSchema = Yup.object().shape({
-    firstName: Yup.string()
+    business_name: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Firstname is required"),
-    secondName: Yup.string()
+        .required("This field is required"),
+    business_reason: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Secondname is required"),
-    surname: Yup.string()
+        .required("This field is required"),
+    RUC: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Surname is required"),
-    secondSurname: Yup.string()
-        .min(3, "Minimum 3 symbols")
-        .max(50, "Maximum 50 symbols")
-        .required("Second Surname is required"),
-    marriedSurname: Yup.string()
-        .min(3, "Minimum 3 symbols")
-        .max(50, "Maximum 50 symbols")
-        .required("Married Surname is required"),
-    email: Yup.string()
+        .required("This field is required"),
+    main_economic_activity: Yup.string().required("This field is required"),
+    operating_day: Yup.number()
+        .min(1, "1 is minimum")
+        .max(1000000, "1000000 is maximum")
+        .required("This field is required"),
+    company_email_1: Yup.string()
         .email("Invalid email")
-        .required("Email is required"),
-    userName: Yup.string().required("Username is required"),
-    dateOfBbirth: Yup.mixed()
-        .nullable(false)
-        .required("Date of Birth is required"),
-    countryOfBbirth: Yup.mixed()
-        .nullable(false)
-        .required("Date of Birth is required"),
-    ipAddress: Yup.string().required("ID or Passport is required"),
-    residentialTel: Yup.string()
+        .required("This field is required"),
+    company_email_2: Yup.string()
+        .email("Invalid email")
+        .required("This field is required"),
+    company_phone_1: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Residential telephone is required"),
-    cell: Yup.string()
+        .required("This field is required"),
+    company_phone_2: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Cell telephone is required"),
-    profession: Yup.string()
+        .required("This field is required"),
+    total_last_year_sales: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Profession or occupation is required"),
-    economicActivity: Yup.string()
+        .required("This field is required"),
+    num_employee: Yup.number()
+        .min(1, "1 is minimum")
+        .max(1000000, "1000000 is maximum")
+        .required("This field is required"),
+    economic_activity: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Economic activity is required"),
+        .required("This field is required"),
     province: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Province is required"),
+        .required("This field is required"),
     district: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("District is required"),
+        .required("This field is required"),
     township: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     neighborhood: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     avenue: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     edifice: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     house: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     reference: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
 });
 const initCustomer = {
     id: undefined,
-    firstName: "",
-    secondName: "",
-    surname: "",
-    secondSurname: "",
-    marriedSurname: "",
-    email: "",
-    userName: "",
-    gender: "Female",
-    status: 0,
-    dateOfBbirth: "",
-    ipAddress: "",
-    residentialTel: "",
-    cell: "",
-    profession: "",
-    economicActivity: "",
+    business_name: "",
+    business_reason: "",
+    RUC: "",
+    main_economic_activity: "",
+    operating_day: "",
+    company_email_1: "",
+    company_email_2: "",
+    company_phone_1: "",
+    company_phone_2: "",
+    total_last_year_sales: "",
+    num_employee: "",
+    economic_activity: "",
     province: "",
     district: "",
     township: "",
@@ -118,113 +154,57 @@ const initCustomer = {
     edifice: "",
     house: "",
     reference: "",
+    incorporation_country: "PA",
+    country: "PA",
     type: 1
 };
 const CompanyData = (props) => {
-    const { onHide } = props;
+    const { onHide, setProgress, setContentName } = props;
+    setProgress(16);
+    const [checked, setChecked] = useState(false);
     const countryLists = useMemo(() => countryList().getData(), []);
+    const handleChange = () => event => {
+        setChecked(event.target.checked);
+    };
+    const { company_data } = useSelector((state) => state.auth);
     return (
         <>
             <Formik
                 enableReinitialize={true}
-                initialValues={initCustomer}
+                initialValues={company_data ? company_data : initCustomer}
                 validationSchema={CustomerEditSchema}
                 onSubmit={(values) => {
-                    console.log(values);
+                    values['is_ampyme'] = checked;
+                    props.setCompanyData(values);
+                    setContentName('CommercialReferences');
                 }}
             >
                 {({ handleSubmit }) => (
                     <>
                         <Modal.Body className="overlay overlay-block cursor-default">
                             <Form className="form form-label-right">
-                                <h3>Personal information</h3>
+                                <h3>Company data</h3>
                                 <hr></hr>
                                 <div className="form-group row">
                                     {/* First Name */}
                                     <div className="col-lg-3">
                                         <Field
-                                            name="firstName"
+                                            name="business_name"
                                             component={Input}
-                                            placeholder="First Name"
-                                            label="First Name"
+                                            label="Business Name"
                                         />
                                     </div>
                                     {/* Last Name */}
                                     <div className="col-lg-3">
                                         <Field
-                                            name="secondName"
+                                            name="business_reason"
                                             component={Input}
-                                            placeholder="Second Name"
-                                            label="Second Name"
+                                            label="Business Reason"
                                         />
                                     </div>
                                     {/* Login */}
                                     <div className="col-lg-3">
-                                        <Field
-                                            name="surname"
-                                            component={Input}
-                                            placeholder="Surname"
-                                            label="Surname"
-                                        />
-                                    </div>
-                                    <div className="col-lg-3">
-                                        <Field
-                                            name="secondSurname"
-                                            component={Input}
-                                            placeholder="Second Surname"
-                                            label="Second Surname"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-group row">
-                                    <div className="col-lg-3">
-                                        <Field
-                                            name="marriedSurname"
-                                            component={Input}
-                                            placeholder="Married Surname"
-                                            label="Married Surname"
-                                        />
-                                    </div>
-                                    {/* Gender */}
-                                    <div className="col-lg-3">
-                                        <Select name="Gender" label="Gender">
-                                            <option value="Female">Female</option>
-                                            <option value="Male">Male</option>
-                                        </Select>
-                                    </div>
-                                    {/* IP Address */}
-                                    <div className="col-lg-3">
-                                        <Field
-                                            name="ipAddress"
-                                            component={Input}
-                                            placeholder="ID or Passport"
-                                            label="ID or Passport"
-                                        // customFeedbackLabel="We'll never share customer IP Address with anyone else"
-                                        />
-                                    </div>
-                                    {/* Date of birth */}
-                                    <div className="col-lg-3">
-                                        <DatePickerField
-                                            name="dateOfBbirth"
-                                            label="Date of Birth"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-group row">
-                                    <div className="col-lg-3">
-                                        <Select name="type" label="Type">
-                                            <option value="0">Business</option>
-                                            <option value="1">Individual</option>
-                                        </Select>
-                                    </div>
-                                    <div className="col-lg-3">
-                                        <DatePickerField
-                                            name="countryOfBbirth"
-                                            label="Country of Birth"
-                                        />
-                                    </div>
-                                    <div className="col-lg-3">
-                                        <Select name="nationality" label="Nationality">
+                                        <Select name="incorporation_country" label="Country of incorporation">
                                             {countryLists?.map((country, index) => {
                                                 return (
                                                     <option key={index} value={country.value}>{country.label}</option>
@@ -236,62 +216,107 @@ const CompanyData = (props) => {
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            name="residentialTel"
+                                            name="economic_activity"
                                             component={Input}
-                                            placeholder="Residential telephone"
-                                            label="Residential telephone"
+                                            label="Economic Activity"
                                         />
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <div className="col-lg-3">
                                         <Field
-                                            name="cell"
+                                            name="RUC"
                                             component={Input}
-                                            placeholder="Cell"
-                                            label="Cell"
+                                            label="RUC"
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <Field
+                                            name="main_economic_activity"
+                                            component={Input}
+                                            label="Main economic activity"
+                                        // customFeedbackLabel="We'll never share customer IP Address with anyone else"
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <label>Do you belong to AMPYME?</label>
+                                        <div style={{ padding: 13 }}>
+                                            <Typography component="div">
+                                                <Grid
+                                                    component="label"
+                                                    container
+                                                    alignItems="center"
+                                                    spacing={1}
+                                                >
+                                                    <Grid item>No</Grid>
+                                                    <Grid item>
+                                                        <AntSwitch
+                                                            checked={checked}
+                                                            onChange={handleChange()}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item>Yes</Grid>
+                                                </Grid>
+                                            </Typography>
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <Field
+                                            type="number"
+                                            name="operating_day"
+                                            component={Input}
+                                            label="How long have you been operating?"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <div className="col-lg-3">
+                                        <Field
+                                            type="email"
+                                            name="company_email_1"
+                                            component={Input}
+                                            label="Company Email 1"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
                                             type="email"
-                                            name="email"
+                                            name="company_email_2"
                                             component={Input}
-                                            placeholder="Email"
-                                            label="Email"
+                                            label="Company Email 2"
                                         />
                                     </div>
-                                    <div className="col-lg-3">
-                                        <Select name="education" label="Education">
-                                            <option value="0">Business</option>
-                                            <option value="1">Individual</option>
-                                        </Select>
-                                    </div>
+
                                     <div className="col-lg-3">
                                         <Field
-                                            type="profession"
-                                            name="profession"
+                                            name="company_phone_1"
                                             component={Input}
-                                            placeholder="Profession or occupation"
-                                            label="Profession or occupation"
+                                            label="Company Phone 1"
+                                        />
+                                    </div>
+
+                                    <div className="col-lg-3">
+                                        <Field
+                                            name="company_phone_2"
+                                            component={Input}
+                                            label="Company Phone 2"
                                         />
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <div className="col-lg-3">
                                         <Field
-                                            name="position"
+                                            name="total_last_year_sales"
                                             component={Input}
-                                            placeholder="Position"
-                                            label="Position"
+                                            label="Total sales last year"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            name="economicActivity"
+                                            type="number"
+                                            name="num_employee"
                                             component={Input}
-                                            placeholder="Economic activity"
-                                            label="Economic activity"
+                                            label="Number of employees"
                                         />
                                     </div>
                                 </div>
@@ -311,7 +336,6 @@ const CompanyData = (props) => {
                                         <Field
                                             name="province"
                                             component={Input}
-                                            placeholder="Province"
                                             label="Province"
                                         />
                                     </div>
@@ -319,7 +343,6 @@ const CompanyData = (props) => {
                                         <Field
                                             name="district"
                                             component={Input}
-                                            placeholder="District"
                                             label="District"
                                         />
                                     </div>
@@ -327,7 +350,6 @@ const CompanyData = (props) => {
                                         <Field
                                             name="township"
                                             component={Input}
-                                            placeholder="Township"
                                             label="Township"
                                         />
                                     </div>
@@ -337,7 +359,6 @@ const CompanyData = (props) => {
                                         <Field
                                             name="neighborhood"
                                             component={Input}
-                                            placeholder="Neighborhood"
                                             label="Neighborhood"
                                         />
                                     </div>
@@ -345,7 +366,6 @@ const CompanyData = (props) => {
                                         <Field
                                             name="avenue"
                                             component={Input}
-                                            placeholder="Avenue"
                                             label="Avenue"
                                         />
                                     </div>
@@ -353,7 +373,6 @@ const CompanyData = (props) => {
                                         <Field
                                             name="edifice"
                                             component={Input}
-                                            placeholder="Edifice"
                                             label="Edifice"
                                         />
                                     </div>
@@ -361,7 +380,6 @@ const CompanyData = (props) => {
                                         <Field
                                             name="house"
                                             component={Input}
-                                            placeholder="House or Apt"
                                             label="House or Apt"
                                         />
                                     </div>
@@ -371,7 +389,6 @@ const CompanyData = (props) => {
                                         <Field
                                             name="reference"
                                             component={Input}
-                                            placeholder="Reference point"
                                             label="Reference point"
                                         />
                                     </div>
@@ -381,10 +398,10 @@ const CompanyData = (props) => {
                         <Modal.Footer>
                             <button
                                 type="button"
-                                onClick={onHide}
+                                onClick={() => setContentName("")}
                                 className="btn btn-light btn-elevate"
                             >
-                                Cancel
+                                Previous
                             </button>
                             <> </>
                             <button
@@ -402,4 +419,4 @@ const CompanyData = (props) => {
     )
 }
 
-export default injectIntl(connect(null, null)(CompanyData));
+export default injectIntl(connect(null, auth.actions)(CompanyData));

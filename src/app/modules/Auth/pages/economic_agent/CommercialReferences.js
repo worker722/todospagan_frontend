@@ -11,82 +11,85 @@ import {
     DatePickerField,
 } from "../../../../../_metronic/_partials/controls";
 import countryList from 'react-select-country-list'
+import { shallowEqual, useSelector } from "react-redux";
+import * as auth from "../../_redux/authRedux";
 
 const CustomerEditSchema = Yup.object().shape({
-    employment_situation: Yup.string()
+    commercial_reference: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Employment situation is required"),
-    work_place: Yup.string()
+        .required("This field is required"),
+    business_name: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Workplace is required"),
-    work_phone: Yup.string()
+        .required("This field is required"),
+    RUC: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Work Phone is required"),
-    work_email: Yup.string()
+        .required("This field is required"),
+    main_economic_activity: Yup.string().required("This field is required"),
+    web_page: Yup.string()
+        .min(3, "Minimum 3 symbols")
+        .max(50, "Maximum 50 symbols")
+        .required("This field is required"),
+    company_email_1: Yup.string()
         .email("Invalid email")
-        .required("Work Email is required"),
-    monthly_income: Yup.number()
-        .min(1, "$1 is minimum")
-        .max(1000000, "$1000000 is maximum")
-        .required("Monthly income is required"),
-    other_income: Yup.number()
-        .min(1, "$1 is minimum")
-        .max(1000000, "$1000000 is maximum")
-        .required("Other recurring income is required"),
-    source_income: Yup.number()
-        .min(1, "$1 is minimum")
-        .max(1000000, "$1000000 is maximum")
-        .required("Source of recurring income is required"),
+        .required("This field is required"),
+    company_email_2: Yup.string()
+        .email("Invalid email")
+        .required("This field is required"),
+    company_phone_1: Yup.string()
+        .min(3, "Minimum 3 symbols")
+        .max(50, "Maximum 50 symbols")
+        .required("This field is required"),
+    company_phone_2: Yup.string()
+        .min(3, "Minimum 3 symbols")
+        .max(50, "Maximum 50 symbols")
+        .required("This field is required"),
     province: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Province is required"),
+        .required("This field is required"),
     district: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("District is required"),
+        .required("This field is required"),
     township: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     neighborhood: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Neighborhood is required"),
+        .required("This field is required"),
     avenue: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Avenue is required"),
+        .required("This field is required"),
     edifice: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Edifice is required"),
+        .required("This field is required"),
     house: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("House or Apt is required"),
+        .required("This field is required"),
     reference: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
-    start_date: Yup.mixed()
-        .nullable(false)
-        .required("Start Date is required"),
+        .required("This field is required"),
 });
 const initCustomer = {
     id: undefined,
-    employment_situation: "",
-    work_place: "",
-    work_phone: "",
-    work_email: "",
-    monthly_income: "",
-    other_income: "",
-    source_income: "",
-    gender: "Female",
-    status: 0,
+    commercial_reference: "",
+    business_name: "",
+    RUC: "",
+    main_economic_activity: "",
+    web_page: "",
+    company_email_1: "",
+    company_email_2: "",
+    company_phone_1: "",
+    company_phone_2: "",
     province: "",
     district: "",
     township: "",
@@ -95,98 +98,105 @@ const initCustomer = {
     edifice: "",
     house: "",
     reference: "",
-    start_date: "",
+    country: "PA",
     type: 1
 };
-const CommercialReferencesor = (props) => {
-    const { onHide } = props;
+const CommercialReferences = (props) => {
+    const { onHide, setProgress, setContentName } = props;
+    setProgress(40);
     const countryLists = useMemo(() => countryList().getData(), []);
+    const { commercial_references_data } = useSelector((state) => state.auth);
+    
     return (
         <>
             <Formik
                 enableReinitialize={true}
-                initialValues={initCustomer}
+                initialValues={commercial_references_data?commercial_references_data:initCustomer}
                 validationSchema={CustomerEditSchema}
                 onSubmit={(values) => {
-                    console.log(values);
+                    props.setCommercialReferences(values);
+                    setContentName('AgentResidentDetails');
                 }}
             >
                 {({ handleSubmit }) => (
                     <>
                         <Modal.Body className="overlay overlay-block cursor-default">
                             <Form className="form form-label-right">
-                                <h3>Personal information</h3>
+                                <h3>Commercial references</h3>
                                 <hr></hr>
                                 <div className="form-group row">
                                     <div className="col-lg-3">
                                         <Field
-                                            name="employment_situation"
+                                            name="commercial_reference"
                                             component={Input}
-                                            placeholder="Employment situation"
-                                            label="Employment situation"
+                                            label="Commercial reference"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            name="work_place"
+                                            name="business_name"
                                             component={Input}
-                                            placeholder="Workplace"
-                                            label="Workplace"
+                                            label="Business Name"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            name="work_phone"
+                                            name="RUC"
                                             component={Input}
-                                            placeholder="Work phone"
-                                            label="Work phone"
+                                            label="RUC"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            name="work_email"
+                                            name="main_economic_activity"
                                             component={Input}
-                                            placeholder="Work email"
-                                            label="Work email"
+                                            label="Main economic activity"
                                         />
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <div className="col-lg-3">
-                                        <DatePickerField
-                                            name="start_date"
-                                            label="Current Work Start Date"
+                                        <Field
+                                            name="web_page"
+                                            component={Input}
+                                            label="Web page"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            type="number"
-                                            name="monthly_income"
+                                            type="email"
+                                            name="company_email_1"
                                             component={Input}
-                                            placeholder="Price"
-                                            label="Monthly income"
+                                            label="Company Email 1"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            type="number"
-                                            name="other_income"
+                                            type="email"
+                                            name="company_email_2"
                                             component={Input}
-                                            placeholder="Price"
-                                            label="Other recurring income"
+                                            label="Company Email 2"
                                         />
                                     </div>
+
                                     <div className="col-lg-3">
                                         <Field
-                                            type="number"
-                                            name="source_income"
+                                            name="company_phone_1"
                                             component={Input}
-                                            placeholder="Price"
-                                            label="Source of recurring income"
+                                            label="Company Phone 1"
                                         />
                                     </div>
                                 </div>
-                                <h6>Residential address</h6>
+                                <div className="form-group row">
+                                    <div className="col-lg-3">
+                                        <Field
+                                            name="company_phone_2"
+                                            component={Input}
+                                            label="Company Phone 2"
+                                        />
+                                    </div>
+                                </div>
+                                <h3>Residential address</h3>
                                 <hr></hr>
                                 <div className="form-group row">
                                     <div className="col-lg-3">
@@ -202,7 +212,6 @@ const CommercialReferencesor = (props) => {
                                         <Field
                                             name="province"
                                             component={Input}
-                                            placeholder="Province"
                                             label="Province"
                                         />
                                     </div>
@@ -210,7 +219,6 @@ const CommercialReferencesor = (props) => {
                                         <Field
                                             name="district"
                                             component={Input}
-                                            placeholder="District"
                                             label="District"
                                         />
                                     </div>
@@ -218,7 +226,6 @@ const CommercialReferencesor = (props) => {
                                         <Field
                                             name="township"
                                             component={Input}
-                                            placeholder="Township"
                                             label="Township"
                                         />
                                     </div>
@@ -228,7 +235,6 @@ const CommercialReferencesor = (props) => {
                                         <Field
                                             name="neighborhood"
                                             component={Input}
-                                            placeholder="Neighborhood"
                                             label="Neighborhood"
                                         />
                                     </div>
@@ -236,7 +242,6 @@ const CommercialReferencesor = (props) => {
                                         <Field
                                             name="avenue"
                                             component={Input}
-                                            placeholder="Avenue"
                                             label="Avenue"
                                         />
                                     </div>
@@ -244,7 +249,6 @@ const CommercialReferencesor = (props) => {
                                         <Field
                                             name="edifice"
                                             component={Input}
-                                            placeholder="Edifice"
                                             label="Edifice"
                                         />
                                     </div>
@@ -252,7 +256,6 @@ const CommercialReferencesor = (props) => {
                                         <Field
                                             name="house"
                                             component={Input}
-                                            placeholder="House or Apt"
                                             label="House or Apt"
                                         />
                                     </div>
@@ -262,7 +265,6 @@ const CommercialReferencesor = (props) => {
                                         <Field
                                             name="reference"
                                             component={Input}
-                                            placeholder="Reference point"
                                             label="Reference point"
                                         />
                                     </div>
@@ -272,10 +274,10 @@ const CommercialReferencesor = (props) => {
                         <Modal.Footer>
                             <button
                                 type="button"
-                                onClick={onHide}
+                                onClick={() => setContentName("CompanyData")}
                                 className="btn btn-light btn-elevate"
                             >
-                                Cancel
+                                Previous
                             </button>
                             <> </>
                             <button
@@ -293,4 +295,4 @@ const CommercialReferencesor = (props) => {
     )
 }
 
-export default injectIntl(connect(null, null)(CommercialReferencesor));
+export default injectIntl(connect(null, auth.actions)(CommercialReferences));

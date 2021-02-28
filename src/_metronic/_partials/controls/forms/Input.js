@@ -1,8 +1,11 @@
 import React from "react";
 import {FieldFeedbackLabel} from "./FieldFeedbackLabel";
 
-const getFieldCSSClasses = (touched, errors) => {
+const getFieldCSSClasses = (touched, errors, disabled) => {
   const classes = ["form-control"];
+  if(disabled) {
+    return classes.join(" ");
+  }
   if (touched && errors) {
     classes.push("is-invalid");
   }
@@ -21,14 +24,16 @@ export function Input({
   withFeedbackLabel = true,
   customFeedbackLabel,
   type = "text",
+  disabled = false,
   ...props
 }) {
   return (
     <>
-      {label && <label>Enter {label}</label>}
+      {label && <label>{label}</label>}
       <input
+        disabled={disabled}
         type={type}
-        className={getFieldCSSClasses(touched[field.name], errors[field.name])}
+        className={getFieldCSSClasses(touched[field.name], errors[field.name], disabled)}
         {...field}
         {...props}
       />

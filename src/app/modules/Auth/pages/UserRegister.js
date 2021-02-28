@@ -3,24 +3,32 @@ import { Modal, Card, Button, ProgressBar } from "react-bootstrap";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import UserInfo from './consumer/UserInfo';
 import LaborData from './consumer/LaborData';
-import PersonalRefrence from './consumer/PersonalRefrence';
+import PersonalReference from './consumer/PersonalReference';
 import UploadDocument from './consumer/UploadDocument';
 import RegulatoryData from './consumer/RegulatoryData';
 import CompanyData from './economic_agent/CompanyData';
 import ShareholderData from './economic_agent/ShareholderData';
-import CommercialReferencesor from './economic_agent/CommercialReferencesor';
+import CommercialReferences from './economic_agent/CommercialReferences';
 import AgentUploadDocument from './economic_agent/AgentUploadDocument';
 import AgentResidentDetails from './economic_agent/AgentResidentDetails';
 import AgentRegulatoryData from './economic_agent/AgentRegulatoryData';
+import { connect } from "react-redux";
+import * as auth from "../_redux/authRedux";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { useHistory } from "react-router-dom";
 
-export function UserRegister({ show, onHide }) {
-    // Customers UI Context
+function UserRegister() {
+  const history = useHistory();
+  // Customers UI Context
+    function onHide() {
+        history.push("/auth/registration"); 
+    }
     const [progressValue, setProgress] = useState(0);
-    const [contentName, setContentName] = useState("");
+    const [contentName, setContentName] = useState("UploadDocument");
     const consumerPage = () => {
         setContentName('UserInfo');
     }
-    const  agentPage = () => {
+    const agentPage = () => {
         setContentName('CompanyData');
     }
     const RegisterMain = () => {
@@ -85,8 +93,8 @@ export function UserRegister({ show, onHide }) {
         <Modal
             className="mt-10 mb-10"
             size="xl"
-            show={show}
-            onHide={onHide}
+            show={true}
+            onHide={() => {}}
             aria-labelledby="example-modal-sizes-title-lg"
         >
             <Modal.Header closeLabel="close" closeButton>
@@ -104,8 +112,8 @@ export function UserRegister({ show, onHide }) {
             {contentName == "LaborData" &&
                 <LaborData onHide={onHide} setProgress={setProgress} setContentName={setContentName}></LaborData>
             }
-            {contentName == "PersonalRefrence" &&
-                <PersonalRefrence onHide={onHide} setProgress={setProgress} setContentName={setContentName}></PersonalRefrence>
+            {contentName == "PersonalReference" &&
+                <PersonalReference onHide={onHide} setProgress={setProgress} setContentName={setContentName}></PersonalReference>
             }
             {contentName == "UploadDocument" &&
                 <UploadDocument onHide={onHide} setProgress={setProgress} setContentName={setContentName}></UploadDocument>
@@ -113,6 +121,26 @@ export function UserRegister({ show, onHide }) {
             {contentName == "RegulatoryData" &&
                 <RegulatoryData onHide={onHide} setProgress={setProgress} setContentName={setContentName}></RegulatoryData>
             }
+            {contentName == "CompanyData" &&
+                <CompanyData onHide={onHide} setProgress={setProgress} setContentName={setContentName}></CompanyData>
+            }
+            {contentName == "ShareholderData" &&
+                <ShareholderData onHide={onHide} setProgress={setProgress} setContentName={setContentName}></ShareholderData>
+            }
+            {contentName == "CommercialReferences" &&
+                <CommercialReferences onHide={onHide} setProgress={setProgress} setContentName={setContentName}></CommercialReferences>
+            }
+            {contentName == "AgentRegulatoryData" &&
+                <AgentRegulatoryData onHide={onHide} setProgress={setProgress} setContentName={setContentName}></AgentRegulatoryData>
+            }
+            {contentName == "AgentResidentDetails" &&
+                <AgentResidentDetails onHide={onHide} setProgress={setProgress} setContentName={setContentName}></AgentResidentDetails>
+            }
+            {contentName == "AgentUploadDocument" &&
+                <AgentUploadDocument onHide={onHide} setProgress={setProgress} setContentName={setContentName}></AgentUploadDocument>
+            }
         </Modal>
     );
 }
+
+export default injectIntl(connect(null, auth.actions)(UserRegister));

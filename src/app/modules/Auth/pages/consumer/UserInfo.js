@@ -11,67 +11,69 @@ import {
     DatePickerField,
 } from "../../../../../_metronic/_partials/controls";
 import countryList from 'react-select-country-list'
+import { shallowEqual, useSelector } from "react-redux";
+import * as auth from "../../_redux/authRedux";
+import Moment from 'moment';
 
 const CustomerEditSchema = Yup.object().shape({
-    firstName: Yup.string()
+    first_name: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Firstname is required"),
-    secondName: Yup.string()
+        .required("This field is required"),
+    second_name: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Secondname is required"),
-    surname: Yup.string()
+        .required("This field is required"),
+    first_surname: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Surname is required"),
-    secondSurname: Yup.string()
+        .required("This field is required"),
+    second_surname: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Second Surname is required"),
-    marriedSurname: Yup.string()
+        .required("This field is required"),
+    married_surname: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Married Surname is required"),
+        .required("This field is required"),
     email: Yup.string()
         .email("Invalid email")
-        .required("Email is required"),
-    userName: Yup.string().required("Username is required"),
-    dateOfBbirth: Yup.mixed()
+        .required("This field is required"),
+    birth_date: Yup.mixed()
         .nullable(false)
-        .required("Date of Birth is required"),
-    countryOfBbirth: Yup.mixed()
+        .required("This field is required"),
+    birth_country: Yup.mixed()
         .nullable(false)
-        .required("Date of Birth is required"),
-    ipAddress: Yup.string().required("ID or Passport is required"),
-    residentialTel: Yup.string()
+        .required("This field is required"),
+    passport: Yup.string().required("This field is required"),
+    telephone_number: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Residential telephone is required"),
+        .required("This field is required"),
     cell: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Cell telephone is required"),
+        .required("This field is required"),
     profession: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Profession or occupation is required"),
+        .required("This field is required"),
     position: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Position is required"),
-    economicActivity: Yup.string()
+        .required("This field is required"),
+    economic_activity: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Economic activity is required"),
+        .required("This field is required"),
     province: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Province is required"),
+        .required("This field is required"),
     district: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("District is required"),
+        .required("This field is required"),
     township: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
@@ -79,43 +81,42 @@ const CustomerEditSchema = Yup.object().shape({
     neighborhood: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     avenue: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     edifice: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     house: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
     reference: Yup.string()
         .min(3, "Minimum 3 symbols")
         .max(50, "Maximum 50 symbols")
-        .required("Township is required"),
+        .required("This field is required"),
 });
 const initCustomer = {
     id: undefined,
-    firstName: "",
-    secondName: "",
-    surname: "",
-    secondSurname: "",
-    marriedSurname: "",
+    first_name: "",
+    second_name: "",
+    first_surname: "",
+    second_surname: "",
+    married_surname: "",
     email: "",
-    userName: "",
-    gender: "Female",
     status: 0,
-    dateOfBbirth: "",
-    countryOfBbirth: "",
-    ipAddress: "",
-    residentialTel: "",
+    gender: "Female",
+    birth_country: "",
+    birth_date: "",
+    passport: "",
+    telephone_number: "",
     cell: "",
     profession: "",
     position: "",
-    economicActivity: "",
+    economic_activity: "",
     province: "",
     district: "",
     township: "",
@@ -124,20 +125,30 @@ const initCustomer = {
     edifice: "",
     house: "",
     reference: "",
+    nationality: "PA",
+    country: "PA",
+    marital_status: "active",
+    education: "0",
     type: 1
 };
 const UserInfo = (props) => {
     const { onHide, setProgress, setContentName } = props;
     setProgress(20);
     const countryLists = useMemo(() => countryList().getData(), []);
+    const { user_info } = useSelector((state) => state.auth);
+
     return (
         <>
             <Formik
                 enableReinitialize={true}
-                initialValues={initCustomer}
+                initialValues={user_info?user_info:initCustomer}
                 validationSchema={CustomerEditSchema}
                 onSubmit={(values) => {
-                    console.log(values);
+                    var birth_country = values['birth_country'];
+                    values['birth_country'] = Moment(birth_country).format('YYYY-MM-DD');
+                    var birth_date = values['birth_date'];
+                    values['birth_date'] = Moment(birth_date).format('YYYY-MM-DD');
+                    props.setUserInfo(values);
                     setContentName("LaborData");
                 }}
             >
@@ -151,35 +162,31 @@ const UserInfo = (props) => {
                                     {/* First Name */}
                                     <div className="col-lg-3">
                                         <Field
-                                            name="firstName"
+                                            name="first_name"
                                             component={Input}
-                                            placeholder="First Name"
                                             label="First Name"
                                         />
                                     </div>
                                     {/* Last Name */}
                                     <div className="col-lg-3">
                                         <Field
-                                            name="secondName"
+                                            name="second_name"
                                             component={Input}
-                                            placeholder="Second Name"
                                             label="Second Name"
                                         />
                                     </div>
                                     {/* Login */}
                                     <div className="col-lg-3">
                                         <Field
-                                            name="surname"
+                                            name="first_surname"
                                             component={Input}
-                                            placeholder="Surname"
                                             label="Surname"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            name="secondSurname"
+                                            name="second_surname"
                                             component={Input}
-                                            placeholder="Second Surname"
                                             label="Second Surname"
                                         />
                                     </div>
@@ -187,15 +194,14 @@ const UserInfo = (props) => {
                                 <div className="form-group row">
                                     <div className="col-lg-3">
                                         <Field
-                                            name="marriedSurname"
+                                            name="married_surname"
                                             component={Input}
-                                            placeholder="Married Surname"
                                             label="Married Surname"
                                         />
                                     </div>
                                     {/* Gender */}
                                     <div className="col-lg-3">
-                                        <Select name="Gender" label="Gender">
+                                        <Select name="gender" label="Gender">
                                             <option value="Female">Female</option>
                                             <option value="Male">Male</option>
                                         </Select>
@@ -203,9 +209,8 @@ const UserInfo = (props) => {
                                     {/* IP Address */}
                                     <div className="col-lg-3">
                                         <Field
-                                            name="ipAddress"
+                                            name="passport"
                                             component={Input}
-                                            placeholder="ID or Passport"
                                             label="ID or Passport"
                                         // customFeedbackLabel="We'll never share customer IP Address with anyone else"
                                         />
@@ -213,21 +218,21 @@ const UserInfo = (props) => {
                                     {/* Date of birth */}
                                     <div className="col-lg-3">
                                         <DatePickerField
-                                            name="dateOfBbirth"
+                                            name="birth_date"
                                             label="Date of Birth"
                                         />
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <div className="col-lg-3">
-                                        <Select name="type" label="Type">
-                                            <option value="0">Business</option>
-                                            <option value="1">Individual</option>
+                                        <Select name="marital_status" label="Marital status">
+                                            <option value="active">yes</option>
+                                            <option value="disable">no</option>
                                         </Select>
                                     </div>
                                     <div className="col-lg-3">
                                         <DatePickerField
-                                            name="countryOfBbirth"
+                                            name="birth_country"
                                             label="Country of Birth"
                                         />
                                     </div>
@@ -244,9 +249,8 @@ const UserInfo = (props) => {
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            name="residentialTel"
+                                            name="telephone_number"
                                             component={Input}
-                                            placeholder="Residential telephone"
                                             label="Residential telephone"
                                         />
                                     </div>
@@ -256,7 +260,6 @@ const UserInfo = (props) => {
                                         <Field
                                             name="cell"
                                             component={Input}
-                                            placeholder="Cell"
                                             label="Cell"
                                         />
                                     </div>
@@ -265,7 +268,6 @@ const UserInfo = (props) => {
                                             type="email"
                                             name="email"
                                             component={Input}
-                                            placeholder="Email"
                                             label="Email"
                                         />
                                     </div>
@@ -280,7 +282,6 @@ const UserInfo = (props) => {
                                             type="profession"
                                             name="profession"
                                             component={Input}
-                                            placeholder="Profession or occupation"
                                             label="Profession or occupation"
                                         />
                                     </div>
@@ -290,15 +291,13 @@ const UserInfo = (props) => {
                                         <Field
                                             name="position"
                                             component={Input}
-                                            placeholder="Position"
                                             label="Position"
                                         />
                                     </div>
                                     <div className="col-lg-3">
                                         <Field
-                                            name="economicActivity"
+                                            name="economic_activity"
                                             component={Input}
-                                            placeholder="Economic activity"
                                             label="Economic activity"
                                         />
                                     </div>
@@ -319,7 +318,6 @@ const UserInfo = (props) => {
                                         <Field
                                             name="province"
                                             component={Input}
-                                            placeholder="Province"
                                             label="Province"
                                         />
                                     </div>
@@ -327,7 +325,6 @@ const UserInfo = (props) => {
                                         <Field
                                             name="district"
                                             component={Input}
-                                            placeholder="District"
                                             label="District"
                                         />
                                     </div>
@@ -335,7 +332,6 @@ const UserInfo = (props) => {
                                         <Field
                                             name="township"
                                             component={Input}
-                                            placeholder="Township"
                                             label="Township"
                                         />
                                     </div>
@@ -345,7 +341,6 @@ const UserInfo = (props) => {
                                         <Field
                                             name="neighborhood"
                                             component={Input}
-                                            placeholder="Neighborhood"
                                             label="Neighborhood"
                                         />
                                     </div>
@@ -353,7 +348,6 @@ const UserInfo = (props) => {
                                         <Field
                                             name="avenue"
                                             component={Input}
-                                            placeholder="Avenue"
                                             label="Avenue"
                                         />
                                     </div>
@@ -361,7 +355,6 @@ const UserInfo = (props) => {
                                         <Field
                                             name="edifice"
                                             component={Input}
-                                            placeholder="Edifice"
                                             label="Edifice"
                                         />
                                     </div>
@@ -369,7 +362,6 @@ const UserInfo = (props) => {
                                         <Field
                                             name="house"
                                             component={Input}
-                                            placeholder="House or Apt"
                                             label="House or Apt"
                                         />
                                     </div>
@@ -379,7 +371,6 @@ const UserInfo = (props) => {
                                         <Field
                                             name="reference"
                                             component={Input}
-                                            placeholder="Reference point"
                                             label="Reference point"
                                         />
                                     </div>
@@ -389,10 +380,10 @@ const UserInfo = (props) => {
                         <Modal.Footer>
                             <button
                                 type="button"
-                                onClick={onHide}
+                                onClick={() => setContentName("")}
                                 className="btn btn-light btn-elevate"
                             >
-                                Cancel
+                                Previous
                             </button>
                             <> </>
                             <button
@@ -410,4 +401,4 @@ const UserInfo = (props) => {
     )
 }
 
-export default injectIntl(connect(null, null)(UserInfo));
+export default injectIntl(connect(null, auth.actions)(UserInfo));

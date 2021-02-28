@@ -9,10 +9,11 @@ import { PersistGate } from "redux-persist/integration/react";
 import { Routes } from "../app/Routes";
 import { I18nProvider } from "../_metronic/i18n";
 import { LayoutSplashScreen, MaterialThemeProvider } from "../_metronic/layout";
-
+import { ToastProvider, useToasts } from 'react-toast-notifications';
 export default function App({ store, persistor, basename }) {
   return (
     /* Provide Redux store */
+    <ToastProvider>
     <Provider store={store}>
       {/* Asynchronously persist redux stores and show `SplashScreen` while it's loading. */}
       <PersistGate persistor={persistor} loading={<LayoutSplashScreen />}>
@@ -32,5 +33,6 @@ export default function App({ store, persistor, basename }) {
         </React.Suspense>
       </PersistGate>
     </Provider>
+    </ToastProvider>
   );
 }
