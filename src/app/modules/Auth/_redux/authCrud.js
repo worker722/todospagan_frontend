@@ -1,16 +1,14 @@
 import axios from "axios";
 import { da } from "date-fns/locale";
 
-export const BASE_URL = "http://192.168.109.67/api";
-export const LOGIN_URL = "http://192.168.109.67/api/login";
+export const BASE_URL = "http://45.33.125.163/todospagan_backend/api";
 // export const REGISTER_URL = "api/auth/register";
-export const REGISTER_URL = "http://192.168.109.67/api/register";
 export const REQUEST_PASSWORD_URL = "api/auth/forgot-password";
 
 export const ME_URL = "api/me";
 
 export function login(email, password) {
-  return axios.post(LOGIN_URL, { email, password });
+  return axios.post(`${BASE_URL}/login`, { email, password });
 }
 
 export function register(email, fullname, phone_number, password) {
@@ -24,7 +22,7 @@ export function register(email, fullname, phone_number, password) {
     status: 'active',
     address_id: 1,
   }
-  return axios.post(REGISTER_URL, data);
+  return axios.post(`${BASE_URL}/register`, data);
 }
 
 export function economic_agent_insert(company_data, commercial_references_data, agent_resident_details, shareholder_data, agent_document, agent_regulatory) {
